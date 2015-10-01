@@ -20,6 +20,10 @@ namespace CoffeeBundler
             {
                 if (_Initialized)
                     return;
+
+                if (TimeoutWaitPeriod == default(int))
+                    TimeoutWaitPeriod = 15000;
+
                 _CompilerFolder = Path.GetTempFileName();
                 File.Delete(_CompilerFolder);
                 Directory.CreateDirectory(_CompilerFolder);
@@ -44,7 +48,7 @@ namespace CoffeeBundler
 
                 WorkingDirectory = _CompilerFolder,
                 FileName = Path.Combine(_CompilerFolder, "node.exe"),
-                Arguments = "compile.js -c " + directoryToCompile,
+                Arguments = CompilerProcessArguments(directoryToCompile),
             };
 
             var process = new Process
@@ -64,7 +68,7 @@ namespace CoffeeBundler
                 process.BeginErrorReadLine();
                 process.BeginOutputReadLine();
 
-                if (!process.WaitForExit(15000))
+                if (!process.WaitForExit(TimeoutWaitPeriod))
                 {
                     // process took too long?
                     process.Kill();
@@ -78,5 +82,29 @@ namespace CoffeeBundler
                 }
             }
         }
+
+        public static string CompilerProcessArguments(string directoryToCompile)
+        {
+            var baseArgs = new[] { Options.NodeCompileJs, Options.Compile };
+            var args = new string[baseArgs.Length + AdditionalCompilationOptions.Length + 1];
+
+            Array.Copy(baseArgs, args, baseArgs.Length);
+            Array.Copy(AdditionalCompilationOptions, 0, args, baseArgs.Length, AdditionalCompilationOptions.Length);
+            args[args.Length - 1] = directoryToCompile;
+
+            var compilerProcessArguments = string.Join(" ", args);
+            return compilerProcessArguments;
+        }
+
+        public static int TimeoutWaitPeriod { get; set; }
+
+        public static class Options
+        {
+            public const string NodeCompileJs = "compile.js";
+            public const string Compile = "-c";
+            public const string GenerateSourceMaps = "-m";
+        }
+
+        public static string[] AdditionalCompilationOptions;
     }
 }
