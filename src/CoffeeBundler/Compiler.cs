@@ -64,17 +64,17 @@ namespace CoffeeBundler
                 process.BeginErrorReadLine();
                 process.BeginOutputReadLine();
 
-                if (!process.WaitForExit(15000))
+                if (!process.WaitForExit(60000))
                 {
                     // process took too long?
                     process.Kill();
-                    throw new InvalidOperationException(string.Format("Coffee compiler took too long:\r\nOutput:\r\n{0}", processOutput));
+                    throw new InvalidOperationException($"While compiling {directoryToCompile} Coffee compiler took too long:\r\nOutput:\r\n{processOutput}");
                 }
 
                 if (process.ExitCode != 0)
                 {
                     // process exited with weird code?
-                    throw new InvalidOperationException(string.Format("Coffee compiler exited with code {0}:\r\nOutput:\r\n{1}", process.ExitCode, processOutput));
+                    throw new InvalidOperationException($"While compiling {directoryToCompile} Coffee compiler exited with code {process.ExitCode}:\r\nOutput:\r\n{processOutput}");
                 }
             }
         }

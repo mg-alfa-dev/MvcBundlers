@@ -1,3 +1,4 @@
+Framework '4.6'
 Include scripts\Build-Nuget.ps1
 
 properties {
@@ -19,6 +20,7 @@ task ? -description "Helper to display task info" {
 task default -depends Compile
 
 task Compile -depends Download-Packages, Clean {
+    Write-Host "Building a $buildConfiguration build"
 	exec { msbuild /v:m $solutionPath /p:"Configuration=$buildConfiguration;Platform=Any CPU;TrackFileAccess=false" }
 }
 
