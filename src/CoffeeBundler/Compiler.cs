@@ -28,7 +28,7 @@ namespace CoffeeBundler
             }
         }
 
-        public static void CompilePath(string directoryToCompile)
+        public static void CompilePath(string directoryToCompile, TimeSpan timeout)
         {
             _Initialize();
             var processStartInfo = new ProcessStartInfo
@@ -64,7 +64,7 @@ namespace CoffeeBundler
                 process.BeginErrorReadLine();
                 process.BeginOutputReadLine();
 
-                if (!process.WaitForExit(15000))
+                if (!process.WaitForExit(Convert.ToInt32(timeout.TotalMilliseconds)))
                 {
                     // process took too long?
                     process.Kill();

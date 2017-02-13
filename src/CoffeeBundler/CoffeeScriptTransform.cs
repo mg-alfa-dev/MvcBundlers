@@ -9,6 +9,17 @@ namespace CoffeeBundler
 {
     public class CoffeeScriptTransform : IBundleTransform
     {
+        public CoffeeScriptTransform()
+        {
+            Timeout = TimeSpan.FromMinutes(1);
+        }
+
+        public CoffeeScriptTransform(TimeSpan timeout)
+        {
+            Timeout = timeout;
+        }
+
+        public TimeSpan Timeout { get; set; }
         public void Process(BundleContext context, BundleResponse response)
         {
             lock (this)
@@ -37,7 +48,7 @@ namespace CoffeeBundler
 
                     // compile the files from .coffee to .js
                     compilerTime.Start();
-                    Compiler.CompilePath(ourTempFolder);
+                    Compiler.CompilePath(ourTempFolder, Timeout);
                     compilerTime.Stop();
 
                     // add the files to the bundle
