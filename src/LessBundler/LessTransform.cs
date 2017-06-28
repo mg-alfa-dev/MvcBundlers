@@ -10,10 +10,18 @@ namespace LessBundler
         private readonly string _BaseFileName;
         private readonly string _VirtualRoot;
 
+        public TimeSpan Timeout { get; set; }
+
         public LessTransform(string baseFileName, string virtualRoot)
+            : this(baseFileName, virtualRoot, TimeSpan.FromMinutes(1))
+        {
+        }
+
+        public LessTransform(string baseFileName, string virtualRoot, TimeSpan timeout)
         {
             _BaseFileName = baseFileName;
             _VirtualRoot = virtualRoot.EndsWith("/") ? virtualRoot : virtualRoot + "/";
+            Timeout = timeout;
         }
 
         public void Process(BundleContext context, BundleResponse response)
@@ -48,7 +56,7 @@ namespace LessBundler
 
                     // compile the root file from .less to .css
                     compilerTime.Start();
-                    Compiler.CompilePath(Path.Combine(ourTempFolder, _BaseFileName));
+                    Compiler.CompilePath(Path.Combine(ourTempFolder, _BaseFileName), Timeout);
                     compilerTime.Stop();
 
                     // add the file to the bundle
