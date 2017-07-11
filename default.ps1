@@ -8,7 +8,7 @@ properties {
   $buildConfiguration = "Release"
   $packagesDir = Join-Path $rootDir "Packages"
   $nugetDir = Join-Path $rootDir ".nuget"
-  $nugetRepo = if ($env:nugetRepo -eq $null) { throw "You must set the NugetRepo environment variable." } else { $env:nugetRepo }
+  $nugetRepo = Resolve-Path "C:\Dropbox\web.Nuget"
   $nuspecsDir = Join-Path $rootDir "nuspecs"
 }
 
