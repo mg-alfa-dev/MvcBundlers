@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.IO.Compression;
 
 namespace CoffeeBundler
 {
@@ -8,12 +7,7 @@ namespace CoffeeBundler
         public static void UnzipTo(string targetFolder)
         {
             const string resourceName = "CoffeeBundler.Properties.Resources.CoffeeCompiler.zip";
-            using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-            using (var zipFile = Ionic.Zip.ZipFile.Read(resourceStream))
-            {
-                Directory.CreateDirectory(targetFolder);
-                zipFile.ExtractAll(targetFolder);
-            }
+            ZipFile.ExtractToDirectory(resourceName, targetFolder);
         }
     }
 }
